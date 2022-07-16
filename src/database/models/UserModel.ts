@@ -24,16 +24,16 @@ Users.init({
     autoIncrement: true,
   },
   name: {
-    type: STRING(50),
+    type: STRING,
     allowNull: false,
   },
   email: {
-    type: STRING(128),
+    type: STRING,
     allowNull: false,
     unique: true,
   },
   password: {
-    type: STRING(64),
+    type: STRING,
     allowNull: false,
   },
   balance: {
