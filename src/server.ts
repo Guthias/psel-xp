@@ -1,5 +1,6 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
+import 'reflect-metadata';
 
 const app = express();
 const PORT = 3000;
