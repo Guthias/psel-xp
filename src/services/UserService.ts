@@ -20,7 +20,7 @@ const errors = {
   },
 };
 
-const signIn = async (email: string, triedPassword: string): Promise <string> => {
+export const signIn = async (email: string, triedPassword: string): Promise <string> => {
   const User = await Users.findOne({
     attributes: { exclude: ['balance'] },
     where: { email },
@@ -33,12 +33,13 @@ const signIn = async (email: string, triedPassword: string): Promise <string> =>
   if (!match) throw errors.incorrectCredentials;
 
   const { password, ...UserData } = User.toJSON() as IUser;
+
   const token = JWT.createToken(UserData);
 
   return token;
 };
 
-const signUp = async (name: string, email: string, password: string): Promise <string> => {
+export const signUp = async (name: string, email: string, password: string): Promise <string> => {
   const hasUser = await Users.findOne({ where: { email } });
   if (hasUser) throw errors.emailAlreadyUsed;
 
@@ -57,4 +58,11 @@ const signUp = async (name: string, email: string, password: string): Promise <s
   return token;
 };
 
-export default { signIn, signUp };
+export const getDetailsById = async (id: number) => {
+  const userDetails = await Users.findOne({
+    attributes: { exclude: ['password'] },
+    where: { id },
+  });
+
+  return { ...userDetails?.toJSON(), balance: Number(userDetails?.balance) };
+};

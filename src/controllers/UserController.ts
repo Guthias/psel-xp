@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import UserService from '../services/UserService';
+import JWT from '../helpers/JWT';
+import * as UserService from '../services/UserService';
 
 const signIn = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -14,4 +15,11 @@ const signUp = async (req: Request, res: Response) => {
   return res.status(StatusCodes.CREATED).json({ token });
 };
 
-export default { signIn, signUp };
+const getUserDetails = async (req: Request, res: Response) => {
+  const token = req.headers.authorization as string;
+  const { id } = JWT.decodeToken(token);
+  const userDetails = await UserService.getDetailsById(id);
+  return res.status(StatusCodes.OK).json(userDetails);
+};
+
+export default { signIn, signUp, getUserDetails };
