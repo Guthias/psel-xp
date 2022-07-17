@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi';
 import { StatusCodes } from 'http-status-codes';
+import { CustomError } from './ErrorsMiddleware';
 
 const LoginSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -13,7 +14,7 @@ const LoginValidate = async (req: Request, res: Response, next: NextFunction) =>
   if (error) {
     const { message } = error.details[0];
 
-    return res.status(StatusCodes.BAD_REQUEST).json({ message });
+    throw CustomError(StatusCodes.BAD_REQUEST, message);
   }
 
   return next();

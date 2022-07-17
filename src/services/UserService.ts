@@ -7,7 +7,7 @@ import IUser from '../interfaces/UserInterface';
 const errors = {
   incorrectCredentials: {
     status: StatusCodes.BAD_REQUEST,
-    message: 'email or password is incorrect',
+    message: 'Invalid Credentials',
   },
 };
 
@@ -21,7 +21,7 @@ const signIn = async (email: string, triedPassword: string): Promise <string> =>
 
   const match = await bcrypt.compare(triedPassword, User.password);
 
-  if (!match) return 'Dados incorretos';
+  if (!match) throw errors.incorrectCredentials;
 
   const { password, ...UserData } = User.toJSON() as IUser;
   const token = JWT.createToken(UserData);
