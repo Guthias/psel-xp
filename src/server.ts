@@ -1,14 +1,11 @@
 import express from 'express';
-import { StatusCodes } from 'http-status-codes';
+import routes from './routes';
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-
-app.get('/', (_req, res) => {
-  res.status(StatusCodes.OK).json({ message: 'Rotas funcionando' });
-});
+app.use(routes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
