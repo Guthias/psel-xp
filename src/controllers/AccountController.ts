@@ -16,4 +16,16 @@ const depositMoney = async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json(newBalance);
 };
 
-export default { depositMoney };
+const withdrawMoney = async (req: Request, res: Response) => {
+  const token = req.headers.authorization;
+  const { value } = req.body;
+
+  if (!value || !token) throw ErrorsList.unexpected;
+  const { id } = JWT.decodeToken(token);
+
+  const newBalance = await UserService.decreaseBalance(id, value);
+
+  res.status(StatusCodes.OK).json(newBalance);
+};
+
+export default { depositMoney, withdrawMoney };

@@ -71,3 +71,25 @@ export const increaseBalance = async (id: number, value: number) => {
 
   return { id, newBalance };
 };
+
+export const decreaseBalance = async (id: number, value: number) => {
+  const User = await Users.findOne({
+    attributes: { include: ['balance'] },
+    where: { id },
+  });
+
+  if (!User) throw ErrorsList.unexpected;
+
+  const newBalance = Number(
+    (Number(User.balance) - value).toFixed(2),
+  );
+
+  if (newBalance < 0) throw ErrorsList.insuficientFounds;
+
+  await Users.update(
+    { balance: newBalance },
+    { where: { id } },
+  );
+
+  return { id, newBalance };
+};

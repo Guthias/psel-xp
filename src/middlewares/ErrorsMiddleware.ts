@@ -24,6 +24,10 @@ export const ErrorsList = {
     status: StatusCodes.UNAUTHORIZED,
     message: 'Invalid or expired Token',
   },
+  insuficientFounds: {
+    status: StatusCodes.PAYMENT_REQUIRED,
+    message: 'Insuficient Founds',
+  },
 };
 
 export const CustomError = (status: number, message: string) => ({ status, message });

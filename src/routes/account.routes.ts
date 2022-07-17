@@ -10,4 +10,6 @@ routes.get('/', AuthVerify, UserController.getUserDetails);
 
 routes.post('/deposit', AuthVerify, ValueValidate, AccountController.depositMoney);
 
+routes.post('/withdraw', AuthVerify, ValueValidate, AccountController.withdrawMoney);
+
 export default routes;
