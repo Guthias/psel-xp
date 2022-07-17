@@ -1,12 +1,10 @@
 import {
-  Model, INTEGER, STRING,
+  Model, STRING,
 } from 'sequelize';
 
 import db from '.';
 
 class Stocks extends Model {
-  id!: number;
-
   symbol!: string;
 
   name!: string;
@@ -15,13 +13,7 @@ class Stocks extends Model {
 Stocks.init({
   id: {
     allowNull: false,
-    autoIncrement: true,
     primaryKey: true,
-    type: INTEGER,
-  },
-  symbol: {
-    allowNull: false,
-    unique: true,
     type: STRING,
   },
   name: {

@@ -6,57 +6,57 @@ module.exports = {
       // Corretora
       {
         userId: 1,
-        stockId: 1,
+        stockId: 'XPBR31',
         quantity: 800
       }, {
         userId: 1,
-        stockId: 2,
+        stockId: 'AZUL4',
         quantity: 800
       }, {
         userId: 1,
-        stockId: 3,
+        stockId: 'ABEV3',
         quantity: 800
       }, {
         userId: 1,
-        stockId: 4,
+        stockId: 'ELET3',
         quantity: 800
       }, {
         userId: 1,
-        stockId: 5,
+        stockId: 'MGLU3',
         quantity: 800
       },
       // Ada
       {
         userId: 2,
-        stockId: 1,
+        stockId: 'XPBR31',
         quantity: 25
       }, {
         userId: 2,
-        stockId: 4,
+        stockId: 'ELET3',
         quantity: 50
       }, {
         userId: 2,
-        stockId: 2,
+        stockId: 'AZUL4',
         quantity: 20
       }, 
       // Alex
       {
         userId: 3,
-        stockId: 3,
+        stockId: 'ABEV3',
         quantity: 20
       }, {
         userId: 3,
-        stockId: 5,
+        stockId: 'MGLU3',
         quantity: 60
       },
       // Linus
       {
         userId: 4,
-        stockId: 1,
+        stockId: 'XPBR31',
         quantity: 50
       }, {
         userId: 4,
-        stockId: 4,
+        stockId: 'ELET3',
         quantity: 20
       },
     ])

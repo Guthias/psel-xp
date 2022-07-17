@@ -4,19 +4,19 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.bulkInsert('stocks', [
       {
-        symbol: 'XPBR31',
+        id: 'XPBR31',
         name: 'XP Inc',
       }, {
-        symbol: 'AZUL4',
+        id: 'AZUL4',
         name: 'Azul',
       }, {
-        symbol: 'ABEV3',
+        id: 'ABEV3',
         name: 'AMBEV',
       }, {
-        symbol: 'ELET3',
+        id: 'ELET3',
         name: 'Eletobras',
       }, {
-        symbol: 'MGLU3',
+        id: 'MGLU3',
         name: 'Magazine Luiza',
       },
     ]);

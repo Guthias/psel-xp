@@ -16,7 +16,7 @@ module.exports = {
       },
       stockId: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         references: {
           model: 'Stocks',
           key: 'id',

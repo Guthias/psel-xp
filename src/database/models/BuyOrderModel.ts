@@ -11,7 +11,7 @@ class BuyOrder extends Model {
 
   userId!: number;
 
-  stockId!: number;
+  stockId!: string;
 
   quantity!: number;
 
