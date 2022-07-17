@@ -8,4 +8,10 @@ const signIn = async (req: Request, res: Response) => {
   return res.status(StatusCodes.OK).json({ token });
 };
 
-export default { signIn };
+const signUp = async (req: Request, res: Response) => {
+  const { name, email, password } = req.body;
+  const token = await UserService.signUp(name, email, password);
+  return res.status(StatusCodes.CREATED).json({ token });
+};
+
+export default { signIn, signUp };
