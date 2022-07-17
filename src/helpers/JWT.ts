@@ -19,4 +19,8 @@ const decodeToken = (token: string): IAuthToken => {
   return { id, name, email };
 };
 
-export default { createToken, decodeToken };
+const validateToken = (token: string) => {
+  jwt.verify(token, SECRET);
+};
+
+export default { createToken, decodeToken, validateToken };
