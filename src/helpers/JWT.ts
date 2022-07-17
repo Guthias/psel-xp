@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import IUser from '../interfaces/UserInterface';
+import 'dotenv/config';
 
 const SECRET = process.env.SECRET as string;
 
