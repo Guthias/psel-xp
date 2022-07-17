@@ -1,24 +1,9 @@
 import bcrypt from 'bcrypt';
-import { StatusCodes } from 'http-status-codes';
 import Users from '../database/models/UserModel';
 import hashPassword from '../helpers/hashPassword';
 import JWT from '../helpers/JWT';
 import IUser from '../interfaces/UserInterface';
-
-const errors = {
-  incorrectCredentials: {
-    status: StatusCodes.BAD_REQUEST,
-    message: 'Invalid Credentials',
-  },
-  emailAlreadyUsed: {
-    status: StatusCodes.CONFLICT,
-    message: 'This email is already registred',
-  },
-  unexpected: {
-    status: StatusCodes.INTERNAL_SERVER_ERROR,
-    message: 'Unexpected Error',
-  },
-};
+import { ErrorsList } from '../middlewares/ErrorsMiddleware';
 
 export const signIn = async (email: string, triedPassword: string): Promise <string> => {
   const User = await Users.findOne({
@@ -26,11 +11,11 @@ export const signIn = async (email: string, triedPassword: string): Promise <str
     where: { email },
   });
 
-  if (!User) throw errors.incorrectCredentials;
+  if (!User) throw ErrorsList.incorrectCredentials;
 
   const match = await bcrypt.compare(triedPassword, User.password);
 
-  if (!match) throw errors.incorrectCredentials;
+  if (!match) throw ErrorsList.incorrectCredentials;
 
   const { password, ...UserData } = User.toJSON() as IUser;
 
@@ -41,7 +26,7 @@ export const signIn = async (email: string, triedPassword: string): Promise <str
 
 export const signUp = async (name: string, email: string, password: string): Promise <string> => {
   const hasUser = await Users.findOne({ where: { email } });
-  if (hasUser) throw errors.emailAlreadyUsed;
+  if (hasUser) throw ErrorsList.emailAlreadyUsed;
 
   const hashedPassword = await hashPassword(password);
   await Users.create({ name, email, password: hashedPassword });
@@ -51,7 +36,7 @@ export const signUp = async (name: string, email: string, password: string): Pro
     where: { email },
   });
 
-  if (!User) throw errors.unexpected;
+  if (!User) throw ErrorsList.unexpected;
 
   const token = JWT.createToken(User.toJSON());
 
