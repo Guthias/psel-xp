@@ -5,7 +5,7 @@ import {
 import db from '.';
 
 class Stocks extends Model {
-  symbol!: string;
+  id!: string;
 
   name!: string;
 }
