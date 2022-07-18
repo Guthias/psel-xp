@@ -7,4 +7,10 @@ const getAllStocks = async (_req: Request, res: Response) => {
   res.status(StatusCodes.OK).json(stockList);
 };
 
-export default { getAllStocks };
+const getStockById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const stockData = await StockService.getStockById(id.toUpperCase());
+  res.status(StatusCodes.OK).json(stockData);
+};
+
+export default { getAllStocks, getStockById };

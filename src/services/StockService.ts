@@ -36,4 +36,21 @@ const getAllStocks = async () => {
   return stockList;
 };
 
-export default { getAllStocks };
+const getStockById = async (id: string) => {
+  const rawStock = await Stocks.findOne({
+    where: { id },
+    include: [{
+      model: BuyOrder,
+      attributes: ['price'],
+    }, {
+      model: SellOrder,
+      attributes: ['price'],
+    }],
+  }) as unknown as IRawStocks;
+
+  if (!rawStock) throw ErrorsList.stockNotFound;
+
+  return formatStock(rawStock);
+};
+
+export default { getAllStocks, getStockById };

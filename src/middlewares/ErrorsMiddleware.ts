@@ -28,6 +28,10 @@ export const ErrorsList = {
     status: StatusCodes.PAYMENT_REQUIRED,
     message: 'Insuficient Founds',
   },
+  stockNotFound: {
+    status: StatusCodes.NOT_FOUND,
+    message: 'Stock not found',
+  },
 };
 
 export const CustomError = (status: number, message: string) => ({ status, message });
