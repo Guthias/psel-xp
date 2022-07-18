@@ -38,6 +38,6 @@ SellOrder.init({
 });
 
 SellOrder.belongsTo(Users);
-SellOrder.belongsTo(Stocks);
+Stocks.hasMany(SellOrder);
 
 export default SellOrder;

@@ -38,6 +38,7 @@ BuyOrder.init({
 });
 
 BuyOrder.belongsTo(Users);
-BuyOrder.belongsTo(Stocks);
+
+Stocks.hasMany(BuyOrder);
 
 export default BuyOrder;
