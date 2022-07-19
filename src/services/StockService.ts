@@ -1,7 +1,7 @@
 import BuyOrder from '../database/models/BuyOrderModel';
 import SellOrder from '../database/models/SellOrderModel';
 import Stocks from '../database/models/StockModel';
-import IRawStocks from '../interfaces/StocksInterface';
+import { IRawStocks } from '../interfaces/StocksInterface';
 import { ErrorsList } from '../middlewares/ErrorsMiddleware';
 
 const formatStock = ({
