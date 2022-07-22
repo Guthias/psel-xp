@@ -8,6 +8,36 @@ import { IUserBalance } from '../interfaces/UserInterface';
 import IOrder from '../interfaces/IOrder';
 import Wallet from '../database/models/WalletModel';
 
+const addBalanceOnSeller = async (
+  sellerId: number,
+  stockPrice: number,
+  quantity:number,
+  transaction: Transaction,
+) => {
+  await User.increment(
+    { balance: stockPrice * quantity },
+    { where: { id: sellerId }, transaction },
+  );
+};
+
+const updateSellOrder = async (
+  { stockId, userId }: IOrder,
+  boughtQuantity: number,
+  transaction: Transaction,
+) => {
+  await SellOrder.decrement(
+    { quantity: boughtQuantity },
+    { where: { stockId, userId }, transaction },
+  );
+  const { quantity: SellOrderQuantity } = await BuyOrder.findOne(
+    { attributes: ['quantity'], where: { stockId, userId }, transaction },
+  ) as unknown as IOrder;
+
+  if (SellOrderQuantity === 0) {
+    await SellOrder.destroy({ where: { stockId, userId }, transaction });
+  }
+};
+
 const addStockOnWallet = async (
   { stockId, userId, quantity }: IOrder,
   boughtQuantity: number,
@@ -34,7 +64,7 @@ const updateBuyOrder = async (
     { quantity: boughtQuantity },
     { where: { stockId, userId }, transaction },
   );
-  const { quantity: buyOrderQuantity } = BuyOrder.findOne(
+  const { quantity: buyOrderQuantity } = await BuyOrder.findOne(
     { attributes: ['quantity'], where: { stockId, userId }, transaction },
   ) as unknown as IOrder;
 
@@ -58,12 +88,17 @@ const makeExchanges = async (stockId: string, price: number) => {
     if (highestBuyOrder.quantity <= lowestSellOrder.quantity) {
       await updateBuyOrder(highestBuyOrder, highestBuyOrder.quantity, t);
       await addStockOnWallet(highestBuyOrder, highestBuyOrder.quantity, t);
-      // Adiciona saldo no vendedor
-      // Subtrai quantidade na ordem de venda
+      await addBalanceOnSeller(
+        lowestSellOrder.userId,
+        lowestSellOrder.price,
+        highestBuyOrder.quantity,
+        t,
+      );
+      await updateSellOrder(lowestSellOrder, highestBuyOrder.quantity, t);
     } else {
       await updateBuyOrder(highestBuyOrder, lowestSellOrder.quantity, t);
       await addStockOnWallet(highestBuyOrder, lowestSellOrder.quantity, t);
-      // chamar novamente a make Exchanges
+      await updateSellOrder(lowestSellOrder, highestBuyOrder.quantity, t);
     }
     await t.commit();
   } catch (e) {
