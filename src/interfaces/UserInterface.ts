@@ -1,4 +1,4 @@
-interface IUser {
+export interface IUser {
   id: number,
   email: string,
   name: string,
@@ -6,4 +6,6 @@ interface IUser {
   balance: number
 }
 
-export default IUser;
+export interface IUserBalance {
+  balance: string,
+}
