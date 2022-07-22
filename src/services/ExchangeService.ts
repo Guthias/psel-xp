@@ -1,3 +1,4 @@
+import { Transaction } from 'sequelize';
 import SellOrder from '../database/models/SellOrderModel';
 import BuyOrder from '../database/models/BuyOrderModel';
 import Sequelize from '../database/models';
@@ -7,38 +8,38 @@ import { IUserBalance } from '../interfaces/UserInterface';
 import IOrder from '../interfaces/IOrder';
 import Wallet from '../database/models/WalletModel';
 
-const updateBuyOrder = async (
+const addStockOnWallet = async (
   { stockId, userId, quantity }: IOrder,
   boughtQuantity: number,
+  transaction: Transaction,
 ) => {
-  const t = await Sequelize.transaction();
-  try {
-    await BuyOrder.decrement(
+  const buyerHasStock = await Wallet.findOne({ where: { stockId, userId } });
+
+  if (buyerHasStock) {
+    await Wallet.increment(
       { quantity: boughtQuantity },
-      { where: { stockId, userId }, transaction: t },
+      { where: { stockId, userId }, transaction },
     );
-    const { quantity: buyOrderQuantity } = BuyOrder.findOne(
-      { attributes: ['quantity'], where: { stockId, userId }, transaction: t },
-    ) as unknown as IOrder;
+  } else {
+    await Wallet.create({ stockId, userId, quantity }, { transaction });
+  }
+};
 
-    if (buyOrderQuantity === 0) {
-      await BuyOrder.destroy({ where: { stockId, userId }, transaction: t });
-    }
+const updateBuyOrder = async (
+  { stockId, userId }: IOrder,
+  boughtQuantity: number,
+  transaction: Transaction,
+) => {
+  await BuyOrder.decrement(
+    { quantity: boughtQuantity },
+    { where: { stockId, userId }, transaction },
+  );
+  const { quantity: buyOrderQuantity } = BuyOrder.findOne(
+    { attributes: ['quantity'], where: { stockId, userId }, transaction },
+  ) as unknown as IOrder;
 
-    const buyerHasStock = await Wallet.findOne({ where: { stockId, userId } });
-
-    if (buyerHasStock) {
-      await Wallet.increment(
-        { quantity: boughtQuantity },
-        { where: { stockId, userId }, transaction: t },
-      );
-    } else {
-      await Wallet.create({ stockId, userId, quantity }, { transaction: t });
-    }
-    await t.commit();
-  } catch (e) {
-    await t.rollback();
-    throw e;
+  if (buyOrderQuantity === 0) {
+    await BuyOrder.destroy({ where: { stockId, userId }, transaction });
   }
 };
 
@@ -49,33 +50,24 @@ const makeExchanges = async (stockId: string, price: number) => {
   const lowestSellOrder = await SellOrder.findOne({ where: { stockId, price } });
   lowestSellOrder as unknown as IOrder;
 
-  // console.log('-------------');
-  // console.log(highestBuyOrder, lowestSellOrder);
-  // console.log('-------------');
   if (!highestBuyOrder || !lowestSellOrder) return;
 
-  console.log('hb', highestBuyOrder.quantity);
-  console.log('ls', lowestSellOrder.quantity);
+  const t = await Sequelize.transaction();
 
-  if (highestBuyOrder.quantity < lowestSellOrder.quantity) {
-    await updateBuyOrder(highestBuyOrder, highestBuyOrder.quantity);
-    // Adiciona saldo no vendedor
-    // Subtrai quantidade na ordem de venda
-    return;
-  } if (highestBuyOrder.quantity === lowestSellOrder.quantity) {
-    // Adiciona ou cria ação na carteira
-    // Remove ordem de compra
-
-    // Adiciona saldo no vendedor
-    // Remove ordem de venda
-  } else {
-    // Adiciona ou cria ação na carteira
-    // Subtrai quantidade na ordem de compra
-
-    // Adiciona saldo no vendedor
-    // Remove ordem de venda
-    console.log('caiu no else');
-    // makeExchanges(stockId, price);
+  try {
+    if (highestBuyOrder.quantity <= lowestSellOrder.quantity) {
+      await updateBuyOrder(highestBuyOrder, highestBuyOrder.quantity, t);
+      await addStockOnWallet(highestBuyOrder, highestBuyOrder.quantity, t);
+      // Adiciona saldo no vendedor
+      // Subtrai quantidade na ordem de venda
+    } else {
+      await updateBuyOrder(highestBuyOrder, lowestSellOrder.quantity, t);
+      await addStockOnWallet(highestBuyOrder, lowestSellOrder.quantity, t);
+      // chamar novamente a make Exchanges
+    }
+    await t.commit();
+  } catch (e) {
+    await t.rollback();
   }
 };
 
