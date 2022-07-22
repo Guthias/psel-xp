@@ -4,6 +4,40 @@ import Sequelize from '../database/models';
 import User from '../database/models/UserModel';
 import { ErrorsList } from '../middlewares/ErrorsMiddleware';
 import { IUserBalance } from '../interfaces/UserInterface';
+import IOrder from '../interfaces/IOrder';
+
+const makeExchanges = async (stockId: string, price: number) => {
+  const highestBuyOrder = await BuyOrder.findOne({ where: { stockId, price } });
+  highestBuyOrder as unknown as IOrder;
+
+  const lowestSellOrder = await SellOrder.findOne({ where: { stockId, price } });
+  lowestSellOrder as unknown as IOrder;
+
+  if (!highestBuyOrder || !lowestSellOrder) return;
+
+  const t = await Sequelize.transaction();
+  try {
+    if (highestBuyOrder.quantity > lowestSellOrder.quantity) {
+      // Adiciona ou cria ação na carteira
+      // Adiciona saldo no vendedor
+      // Remove ordem de compra
+      // Subtrai quantidade na ordem de venda
+    } else if (highestBuyOrder.quantity === lowestSellOrder.quantity) {
+      // Adiciona ou cria ação na carteira
+      // Adiciona saldo no vendedor
+      // Remove ordem de compra
+      // Remove ordem de venda
+    } else {
+      // Adiciona ou cria ação na carteira
+      // Adiciona saldo no vendedor
+      // Subtrai quantidade na ordem de compra
+      // Remove ordem de venda
+      makeExchanges(stockId, price);
+    }
+  } catch (e) {
+    t.rollback();
+  }
+};
 
 const verifyFounds = async (userId: number, stockPrice: number, quantity: number) => {
   const { balance: userBalance } = await User.findOne({
@@ -46,7 +80,8 @@ const buyStocks = async (userId: number, stockId: string, quantity: number) => {
 
   const createdBuyOrder = await createBuyOrder(userId, stockId, marketPrice, quantity);
 
-  // Chamar função para verificar as ordens de compra e venda e fazer a transação
+  await makeExchanges(stockId, quantity);
+
   return { marketPrice, createdBuyOrder };
 };
 
