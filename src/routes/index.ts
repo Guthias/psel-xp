@@ -5,6 +5,7 @@ import SignupValidate from '../middlewares/SignupValidate';
 import accountRoutes from './account.routes';
 import stockRoutes from './stock.routes';
 import walletRoutes from './wallet.routes';
+import exchangeRoutes from './exchange.routes';
 
 const routes = Router();
 
@@ -17,5 +18,7 @@ routes.use('/account', accountRoutes);
 routes.use('/stocks', stockRoutes);
 
 routes.use('/wallet', walletRoutes);
+
+routes.use('/exchange', exchangeRoutes);
 
 export default routes;
