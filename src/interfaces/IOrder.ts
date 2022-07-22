@@ -1,4 +1,4 @@
-interface ISellOrder {
+interface IOrder {
   id: number,
   userId: number,
   stockId: string,
@@ -6,4 +6,4 @@ interface ISellOrder {
   price: number,
 }
 
-export default ISellOrder;
+export default IOrder;
