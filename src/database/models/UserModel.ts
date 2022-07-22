@@ -39,6 +39,9 @@ Users.init({
   balance: {
     type: DECIMAL(10, 2),
     defaultValue: 0,
+    validate: {
+      min: 0,
+    },
   },
 }, {
   sequelize: db,
