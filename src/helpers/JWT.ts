@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import IUser from '../interfaces/UserInterface';
+import { IUser } from '../interfaces/UserInterface';
 import 'dotenv/config';
 import IAuthToken from '../interfaces/AuthTokenInterface';
 

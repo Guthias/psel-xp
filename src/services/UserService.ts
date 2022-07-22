@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import Users from '../database/models/UserModel';
 import hashPassword from '../helpers/hashPassword';
 import JWT from '../helpers/JWT';
-import IUser from '../interfaces/UserInterface';
+import { IUser } from '../interfaces/UserInterface';
 import { ErrorsList } from '../middlewares/ErrorsMiddleware';
 
 export const signIn = async (email: string, triedPassword: string): Promise <string> => {
