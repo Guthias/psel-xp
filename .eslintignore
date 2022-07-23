@@ -1,3 +1,5 @@
 /build
 /src/database/migrations
 /src/database/seeders
+/src/__tests__
+jest.config.js
