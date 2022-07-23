@@ -8,8 +8,8 @@ const getAll = async (userId:number) => {
       w.stockId as id,
       w.quantity as quantity,
       MAX(bo.price) as marketPrice
-    FROM corretora.wallets as w
-      INNER JOIN corretora.buyorders as bo ON w.stockId = bo.stockId
+    FROM wallets as w
+      INNER JOIN buyorders as bo ON w.stockId = bo.stockId
     WHERE w.userId = ?
     GROUP BY w.stockId;`, {
     replacements: [userId],
