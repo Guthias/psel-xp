@@ -12,9 +12,11 @@ const LoginValidate = async (req: Request, res: Response, next: NextFunction) =>
   const { error } = LoginSchema.validate(req.body);
 
   if (error) {
-    const { message } = error.details[0];
+    const { type, message } = error.details[0];
 
-    throw CustomError(StatusCodes.BAD_REQUEST, message);
+    if (type === 'any.required') throw CustomError(StatusCodes.BAD_REQUEST, message);
+
+    throw CustomError(StatusCodes.UNPROCESSABLE_ENTITY, message);
   }
 
   return next();
