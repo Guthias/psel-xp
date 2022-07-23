@@ -1,8 +1,19 @@
 import request from 'supertest';
 import app from '../../app';
 import Users from '../../database/models/UserModel';
+import shell from 'shelljs';
+import sequelize from './assets/sequelize';
 
 describe('<POST /signup>', () => {
+  beforeAll(() => {
+    shell.exec([
+      sequelize.drop,
+      sequelize.create,
+      sequelize.migrate,
+      sequelize.seed,
+    ].join(' && '))
+  });
+
   describe('When invalid fields', () => {
     it('Should return error 400 with a details message when missing e-mail field', async () => {
       const result = await request(app).post('/signup').send({
