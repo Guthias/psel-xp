@@ -12,13 +12,13 @@ describe('<POST /login>', () => {
       expect(result.body).toEqual({ message: '\"email\" is required'});
     });
 
-    it('Should return error 400 with a details message when email be on invalid format', async () => {
+    it('Should return error 422 with a details message when email be on invalid format', async () => {
       const result = await request(app).post('/login').send({
         email: "teste.com",
         password: "12345678"
       });
       
-      expect(result.status).toBe(400);
+      expect(result.status).toBe(422);
       expect(result.body).toEqual({ message: '\"email\" must be a valid email'});
     });
     
