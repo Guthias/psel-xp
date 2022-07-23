@@ -21,20 +21,20 @@ const addBalanceOnSeller = async (
 };
 
 const updateSellOrder = async (
-  { stockId, userId }: IOrder,
+  { id }: IOrder,
   boughtQuantity: number,
   transaction: Transaction,
 ) => {
   await SellOrder.decrement(
     { quantity: boughtQuantity },
-    { where: { stockId, userId }, transaction },
+    { where: { id }, transaction },
   );
   const { quantity: SellOrderQuantity } = await BuyOrder.findOne(
-    { attributes: ['quantity'], where: { stockId, userId }, transaction },
+    { attributes: ['quantity'], where: { id }, transaction },
   ) as unknown as IOrder;
 
   if (SellOrderQuantity === 0) {
-    await SellOrder.destroy({ where: { stockId, userId }, transaction });
+    await SellOrder.destroy({ where: { id }, transaction });
   }
 };
 
@@ -55,21 +55,17 @@ const addStockOnWallet = async (
   }
 };
 
-const updateBuyOrder = async (
-  { stockId, userId }: IOrder,
-  boughtQuantity: number,
-  transaction: Transaction,
-) => {
+const updateBuyOrder = async ({ id }: IOrder, boughtQuantity: number, transaction: Transaction) => {
   await BuyOrder.decrement(
     { quantity: boughtQuantity },
-    { where: { stockId, userId }, transaction },
+    { where: { id }, transaction },
   );
   const { quantity: buyOrderQuantity } = await BuyOrder.findOne(
-    { attributes: ['quantity'], where: { stockId, userId }, transaction },
+    { attributes: ['quantity'], where: { id }, transaction },
   ) as unknown as IOrder;
 
   if (buyOrderQuantity === 0) {
-    await BuyOrder.destroy({ where: { stockId, userId }, transaction });
+    await BuyOrder.destroy({ where: { id }, transaction });
   }
 };
 
@@ -84,22 +80,20 @@ const makeExchanges = async (stockId: string, price: number) => {
 
   const t = await Sequelize.transaction();
 
+  const boughtQuantity = highestBuyOrder.quantity <= lowestSellOrder.quantity
+    ? highestBuyOrder.quantity
+    : lowestSellOrder.quantity;
+
   try {
-    if (highestBuyOrder.quantity <= lowestSellOrder.quantity) {
-      await updateBuyOrder(highestBuyOrder, highestBuyOrder.quantity, t);
-      await addStockOnWallet(highestBuyOrder, highestBuyOrder.quantity, t);
-      await addBalanceOnSeller(
-        lowestSellOrder.userId,
-        lowestSellOrder.price,
-        highestBuyOrder.quantity,
-        t,
-      );
-      await updateSellOrder(lowestSellOrder, highestBuyOrder.quantity, t);
-    } else {
-      await updateBuyOrder(highestBuyOrder, lowestSellOrder.quantity, t);
-      await addStockOnWallet(highestBuyOrder, lowestSellOrder.quantity, t);
-      await updateSellOrder(lowestSellOrder, highestBuyOrder.quantity, t);
-    }
+    await updateBuyOrder(highestBuyOrder, boughtQuantity, t);
+    await addStockOnWallet(highestBuyOrder, boughtQuantity, t);
+    await addBalanceOnSeller(
+      lowestSellOrder.userId,
+      lowestSellOrder.price,
+      boughtQuantity,
+      t,
+    );
+    await updateSellOrder(lowestSellOrder, boughtQuantity, t);
     await t.commit();
   } catch (e) {
     await t.rollback();
