@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { Options } from 'sequelize';
 
 const environment = process.env.NODE_ENV === 'test' ? '-test' : '';
-const showLogs = process.env.NODE_ENV === 'test';
+const showLogs = process.env.NODE_ENV !== 'test';
 
 const config: Options = {
   username: process.env.DB_USERNAME,

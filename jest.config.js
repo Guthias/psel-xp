@@ -5,4 +5,10 @@ module.exports = {
   testMatch: [
     "**/src/**/*.test.ts?(x)",
   ],
+  coveragePathIgnorePatterns: [
+    'src/database/*',
+    'src/routes/*',
+    'src/interfaces/*',
+    'src/__tests__/*'
+  ]
 };
