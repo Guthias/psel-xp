@@ -14,21 +14,21 @@ describe('<POST /login>', () => {
 
     it('Should return error 400 with a details message when email be on invalid format', async () => {
       const result = await request(app).post('/login').send({
-        email: "teste@teste.com"
-      });
-
-      expect(result.status).toBe(400);
-      expect(result.body).toEqual({ message: '\"password\" is required'});
-    });
-
-    it('Should return error 400 with a details message when missing password field', async () => {
-      const result = await request(app).post('/login').send({
         email: "teste.com",
         password: "12345678"
       });
-
+      
       expect(result.status).toBe(400);
       expect(result.body).toEqual({ message: '\"email\" must be a valid email'});
+    });
+    
+    it('Should return error 400 with a details message when missing password field', async () => {
+      const result = await request(app).post('/login').send({
+        email: "teste@teste.com"
+      });
+  
+      expect(result.status).toBe(400);
+      expect(result.body).toEqual({ message: '\"password\" is required'});
     });
   });
 
