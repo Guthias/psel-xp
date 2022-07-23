@@ -1,5 +1,6 @@
 import request from 'supertest';
 import app from '../../app';
+import Users from '../../database/models/UserModel';
 
 describe('<POST /signup>', () => {
   describe('When invalid fields', () => {
@@ -68,6 +69,38 @@ describe('<POST /signup>', () => {
   });
 
   describe('When valid fields', () => {
+    it('Shouldn\'t be possible sign up with an already registred e-mail', async () => {
+      const result = await request(app).post('/signup').send({
+        name: "Already registred",
+        email: "ada@teste.com",
+        password: "senhaSegura"
+      });
 
+      expect(result.status).toBe(409);
+      expect(result.body).toEqual({ message: 'This email is already registred' });
+    })
+
+    it('Should return a status 201 and a jwt token when register a new user', async () => {
+      const result = await request(app).post('/signup').send({
+        name: "Geralt of Rivia",
+        email: "geralt@test.com",
+        password: "senhaSegura"
+      });
+
+      expect(result.status).toBe(201);
+      expect(result.body.token).toBeDefined();
+    })
+
+    it('Should hash user password', async () => {
+      await request(app).post('/signup').send({
+        name: "Triss Merigold",
+        email: "triss@test.com",
+        password: "senhaSegura"
+      });
+
+      const result = await Users.findOne({ where: { email: 'triss@teste.com' }});
+      expect(result).toBeDefined();
+      expect(result?.password).not.toBe('senhaSegura')
+    })
   });
 });
