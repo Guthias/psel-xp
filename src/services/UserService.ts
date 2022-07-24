@@ -69,7 +69,7 @@ export const increaseBalance = async (id: number, value: number) => {
     { where: { id } },
   );
 
-  return { id, newBalance };
+  return { newBalance };
 };
 
 export const decreaseBalance = async (id: number, value: number) => {
@@ -91,5 +91,5 @@ export const decreaseBalance = async (id: number, value: number) => {
     { where: { id } },
   );
 
-  return { id, newBalance };
+  return { newBalance };
 };
