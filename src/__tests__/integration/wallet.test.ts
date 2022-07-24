@@ -124,10 +124,80 @@ describe('/wallet', () => {
         const result = await request(app).get('/wallet/buy')
           .set({ Authorization: token });
 
-        const stocksOrder = result.body.map(({ orderId }: {orderId:string}) => orderId);
+        const stocksOrder = result.body.map(({ orderId }: { orderId: string }) => orderId);
 
         expect(stocksOrder[0]).toBe('ELET3');
         expect(stocksOrder[1]).toBe('XPBR31');
+      })
+    })
+  })
+
+  describe('<GET /sell>', () => {
+    describe('It\'s an authorized route', () => {
+      it('Shouldn\'t be possible access without a token', async () => {
+        const result = await request(app).get('/wallet/sell');
+
+        expect(result.status).toBe(401);
+        expect(result.body.message).toBe('Token not found');
+      })
+
+      it('Shouldn\'t be possible access with an invalid token', async () => {
+        const result = await request(app).get('/wallet/sell')
+          .set({ Authorization: 'tokenInvalido' });
+
+        expect(result.status).toBe(401);
+        expect(result.body.message).toBe('Invalid or expired Token');
+      })
+    });
+
+    describe('When be successful', () => {
+      let token: any;
+
+      beforeAll(async () => {
+        const response = await request(app).post('/login').send({
+          email: 'admin@xpinc.com',
+          password: '12345678'
+        });
+
+        token = response.body.token;
+      });
+
+      it('Should have status code 200', async () => {
+        const result = await request(app).get('/wallet/sell')
+          .set({ Authorization: token });
+
+        expect(result.status).toBe(200);
+      })
+
+      it('Should return a list with all active sell orders', async () => {
+        const result = await request(app).get('/wallet/sell')
+          .set({ Authorization: token });
+
+        expect(result.body.length).toBe(5);
+      })
+
+      it('Should contain orderId, stockId, quantity and price from orders', async () => {
+        const result = await request(app).get('/wallet/sell')
+          .set({ Authorization: token });
+
+        const returnedProperties = Object.keys(result.body[0])
+        expect(returnedProperties).toContain('orderId');
+        expect(returnedProperties).toContain('stockId');
+        expect(returnedProperties).toContain('quantity');
+        expect(returnedProperties).toContain('price');
+      })
+
+      it('Should return orders ordered alphabetically by stockId', async () => {
+        const result = await request(app).get('/wallet/sell')
+          .set({ Authorization: token });
+
+        const stocksOrder = result.body.map(({ orderId }: { orderId: string }) => orderId);
+
+        expect(stocksOrder[0]).toBe('ABEV3');
+        expect(stocksOrder[1]).toBe('AZUL4');
+        expect(stocksOrder[2]).toBe('ELET3');
+        expect(stocksOrder[3]).toBe('MGLU3');
+        expect(stocksOrder[4]).toBe('XPBR31');
       })
     })
   })
