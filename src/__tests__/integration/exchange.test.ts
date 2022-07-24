@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from '../../app';
+import BuyOrder from '../../database/models/BuyOrderModel';
 import SellOrder from '../../database/models/SellOrderModel';
-import Stocks from '../../database/models/StockModel';
 import Users from '../../database/models/UserModel';
 import Wallet from '../../database/models/WalletModel';
 import IOrder from '../../interfaces/IOrder';
@@ -242,11 +242,11 @@ describe('/exchange' , () => {
             const { balance } = await Users
               .findOne({ attributes: ['balance'], where: { id: 2 } }) as IUser;
 
-            expect(Number(balance)).toEqual(7361.8);
+            expect(Number(balance)).toEqual(7361.6);
           });
 
-          it('Should decrease correclty from the buy order', async () => {
-            const { quantity } = await Users
+          it('Should decrease correclty quantity from the buy order', async () => {
+            const { quantity } = await BuyOrder
               .findOne({ where: { id: buyOrderId }}) as unknown as IOrder;
 
             expect(quantity).toBe(10);
@@ -271,7 +271,7 @@ describe('/exchange' , () => {
             const { balance } = await Users
               .findOne({ attributes: ['balance'], where: { id: 1 } }) as IUser;
 
-            expect(Number(balance)).toEqual(999361.6);
+            expect(Number(balance)).toEqual(1000608);
           });
         })
       })
