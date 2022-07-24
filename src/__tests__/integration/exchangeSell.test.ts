@@ -94,7 +94,7 @@ describe('/exchange', () => {
         });
       })
 
-      describe('Verify Successefull requests format', () => {  
+      describe('Verify Successful requests format', () => {  
         it('Should have status 201 when sell order be successful created', async () => {
           const result = await request(app).post('/exchange/sell')
             .set({Authorization: token})

@@ -158,12 +158,38 @@ const buyStocks = async (userId: number, stockId: string, quantity: number) => {
   };
 };
 
-const createSellOrder = async (userId: number, stockId: string, quantity: number) => {
+const createSellOrder = async (
+  userId: number,
+  stockId: string,
+  price: number,
+  quantity: number,
+) => {
   const userStocks = await Wallet.findOne({
     where: { userId, stockId },
   });
 
-  if (!userStocks || userStocks.quantity - quantity > 0) throw ErrorsList.notEnoughStocks;
+  if (!userStocks || userStocks.quantity - quantity < 0) throw ErrorsList.notEnoughStocks;
+
+  const t = await Sequelize.transaction();
+
+  try {
+    await Wallet.decrement(
+      { quantity },
+      { where: { userId, stockId }, transaction: t },
+    );
+
+    const createdSellOrder = await SellOrder.create(
+      {
+        userId, stockId, price, quantity,
+      },
+      { transaction: t },
+    ) as IOrder;
+    await t.commit();
+    return createdSellOrder;
+  } catch (e) {
+    await t.rollback();
+    throw e;
+  }
 };
 
 const sellStocks = async (userId: number, stockId: string, quantity: number) => {
@@ -171,9 +197,16 @@ const sellStocks = async (userId: number, stockId: string, quantity: number) => 
 
   if (!hasStock) throw ErrorsList.stockNotFound;
 
-  const createdSellOrder = await createSellOrder(userId, stockId, quantity);
+  const marketPrice = await BuyOrder.max('price', { where: { stockId } }) as number;
 
-  return createdSellOrder;
+  const createdSellOrder = await createSellOrder(userId, stockId, marketPrice, quantity);
+
+  return {
+    orderId: createdSellOrder.id,
+    stockId,
+    sellPrice: marketPrice,
+    quantity,
+  };
 };
 
 export default { buyStocks, sellStocks };
