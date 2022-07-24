@@ -138,22 +138,29 @@ const createBuyOrder = async (userId: number, stockId: string, price: number, qu
   }
 };
 
-const buyStocks = async (userId: number, stockId: string, quantity: number) => {
+const buyStocks = async (
+  userId: number,
+  stockId: string,
+  quantity: number,
+  price: number|undefined,
+) => {
   const hasStock = await Stocks.findOne({ where: { id: stockId } });
 
   if (!hasStock) throw ErrorsList.stockNotFound;
 
-  const marketPrice = await SellOrder.min('price', { where: { stockId } }) as number;
+  const buyPrice = price || await SellOrder.min('price', { where: { stockId } }) as number;
 
-  const createdBuyOrder = await createBuyOrder(userId, stockId, marketPrice, quantity);
+  const createdBuyOrder = await createBuyOrder(userId, stockId, buyPrice, quantity);
 
-  await makeExchanges(stockId, marketPrice);
+  await makeExchanges(stockId, buyPrice);
+
+  const investedValue = quantity * buyPrice;
 
   return {
     orderId: createdBuyOrder.id,
     stockId,
-    investedValue: quantity * marketPrice,
-    orderPrice: marketPrice,
+    investedValue: Number(investedValue.toFixed(2)),
+    orderPrice: buyPrice,
     quantity,
   };
 };
@@ -192,21 +199,26 @@ const createSellOrder = async (
   }
 };
 
-const sellStocks = async (userId: number, stockId: string, quantity: number) => {
+const sellStocks = async (
+  userId: number,
+  stockId: string,
+  quantity: number,
+  price: number|undefined,
+) => {
   const hasStock = await Stocks.findOne({ where: { id: stockId } });
 
   if (!hasStock) throw ErrorsList.stockNotFound;
 
-  const marketPrice = await BuyOrder.max('price', { where: { stockId } }) as number;
+  const sellPrice = price || await BuyOrder.max('price', { where: { stockId } }) as number;
 
-  const createdSellOrder = await createSellOrder(userId, stockId, marketPrice, quantity);
+  const createdSellOrder = await createSellOrder(userId, stockId, sellPrice, quantity);
 
-  await makeExchanges(stockId, marketPrice);
+  await makeExchanges(stockId, sellPrice);
 
   return {
     orderId: createdSellOrder.id,
     stockId,
-    sellPrice: marketPrice,
+    sellPrice,
     quantity,
   };
 };
