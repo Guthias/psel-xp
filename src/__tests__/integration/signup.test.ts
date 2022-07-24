@@ -1,17 +1,11 @@
 import request from 'supertest';
 import app from '../../app';
 import Users from '../../database/models/UserModel';
-import shell from 'shelljs';
-import sequelize from './assets/sequelize';
+import resetDatabase from './assets/resetDatabase';
 
 describe('<POST /signup>', () => {
   beforeAll(() => {
-    shell.exec([
-      sequelize.drop,
-      sequelize.create,
-      sequelize.migrate,
-      sequelize.seed,
-    ].join(' && '))
+    resetDatabase();
   });
 
   describe('When invalid fields', () => {
