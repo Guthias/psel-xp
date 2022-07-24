@@ -115,6 +115,22 @@ describe('/exchange' , () => {
             expect(result.body.orderPrice).toBeDefined();
             expect(result.body.quantity).toBeDefined();
         });
+
+        it('Should be possible create a buy Order with a custom price', async () => {
+          const result = await request(app).post('/exchange/buy')
+            .set({Authorization: token})
+            .send({
+              stockId: 'XPBR31',
+              quantity: 10,
+              price: 28.94,
+            });
+          
+            expect(result.body.orderId).toBeDefined();
+            expect(result.body.stockId).toBe('XPBR31');
+            expect(result.body.investedValue).toBe(289.40);
+            expect(result.body.orderPrice).toBe(28.94);
+            expect(result.body.quantity).toBe(10);
+        });
       })
 
       describe('Verify if exchanges is made correctly', () => {  

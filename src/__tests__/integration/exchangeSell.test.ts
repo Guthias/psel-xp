@@ -119,6 +119,18 @@ describe('/exchange', () => {
             expect(result.body.sellPrice).toBeDefined();
             expect(result.body.quantity).toBeDefined();
         });
+
+        it('Should be possible create a sell order with custom price', async () => {
+          const result = await request(app).post('/exchange/sell')
+            .set({Authorization: token})
+            .send({
+              stockId: 'ELET3',
+              quantity: 10,
+              price: 44.22
+            });
+          
+            expect(result.body.sellPrice).toBe(44.22);
+        });
       })
     })
   });
