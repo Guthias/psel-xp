@@ -221,6 +221,59 @@ describe('/exchange' , () => {
             expect(Number(balance)).toEqual(8961.6);
           });
         })
+
+        describe('When bougth quantity be bigger than sell order', () => {
+          let buyOrderId:any;
+
+          beforeAll(async () => {
+            resetDatabase();
+
+            const { body:createdBuyOrder} = await request(app).post('/exchange/buy')
+              .set({ Authorization: token })
+              .send({
+                stockId: 'MGLU3',
+                quantity: 210,
+              });
+            
+              buyOrderId = createdBuyOrder.orderId
+          }, 60000);
+
+          it('Should decrease correctly user balance', async () => {
+            const { balance } = await Users
+              .findOne({ attributes: ['balance'], where: { id: 2 } }) as IUser;
+
+            expect(Number(balance)).toEqual(7361.8);
+          });
+
+          it('Should decrease correclty from the buy order', async () => {
+            const { quantity } = await Users
+              .findOne({ where: { id: buyOrderId }}) as unknown as IOrder;
+
+            expect(quantity).toBe(10);
+          });
+
+          it('Should add stocks on buyer wallet', async () => {
+            const { quantity } = await Wallet.findOne({ where: {
+              stockId: 'MGLU3',
+              userId: 2,
+            }}) as unknown as { quantity: number}
+
+            expect(quantity).toBe(200)
+          });
+
+          it('Should delete the sell order', async () => {
+            const sellOrder = await SellOrder.findOne({ where: { id: 5 }}) as IOrder;
+
+            expect(sellOrder).toBeNull();
+          });
+
+          it('Should increase seller balance correctly', async () => {
+            const { balance } = await Users
+              .findOne({ attributes: ['balance'], where: { id: 1 } }) as IUser;
+
+            expect(Number(balance)).toEqual(999361.6);
+          });
+        })
       })
     });
   });
