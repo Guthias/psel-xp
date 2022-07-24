@@ -54,5 +54,45 @@ describe('/exchange' , () => {
         expect(result.body.message).toBe('\"quantity\" is required');
       })
     })
+
+    describe('When valid request body', () => {
+      describe('Verify fail requests', () => {
+        it('Should return an error if user don\'t have enough stocks which he\'s trying to sell', async () => {
+          const result = await request(app).post('/exchange/sell')
+            .set({Authorization: token})
+            .send({
+              stockId: 'XPBR31',
+              quantity: 50,
+            });
+          
+          expect(result.status).toBe(409);
+          expect(result.body.message).toBe('You don\'t have enough stock quantity');
+        })
+
+        it('Should have an error user try to sell a stock which he don\'t have', async () => {
+          const result = await request(app).post('/exchange/sell')
+            .set({Authorization: token})
+            .send({
+              stockId: 'ABEV3',
+              quantity: 10,
+            });
+          
+          expect(result.status).toBe(409);
+          expect(result.body.message).toBe('You don\'t have enough stock quantity');
+        });
+
+        it('Should have an error with status 404 when stock don\'t be found', async () => {
+          const result = await request(app).post('/exchange/sell')
+            .set({Authorization: token})
+            .send({
+              stockId: 'AAAAA',
+              quantity: 10,
+            });
+          
+          expect(result.status).toBe(404);
+          expect(result.body.message).toBe('Stock not found');
+        });
+      })
+    })
   });
 });
