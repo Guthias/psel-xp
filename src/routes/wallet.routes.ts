@@ -5,5 +5,6 @@ import AuthVerify from '../middlewares/AuthVerify';
 const routes = Router();
 
 routes.get('/', AuthVerify, WalletController.getAll);
+routes.get('/buy', AuthVerify);
 
 export default routes;
