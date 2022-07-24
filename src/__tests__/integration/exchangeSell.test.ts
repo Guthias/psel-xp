@@ -93,6 +93,33 @@ describe('/exchange', () => {
           expect(result.body.message).toBe('Stock not found');
         });
       })
+
+      describe('Verify Successefull requests format', () => {  
+        it('Should have status 201 when sell order be successful created', async () => {
+          const result = await request(app).post('/exchange/sell')
+            .set({Authorization: token})
+            .send({
+              stockId: 'ELET3',
+              quantity: 20,
+            });
+          
+          expect(result.status).toBe(201);
+        });
+
+        it('Should return buy Order details on correct format', async () => {
+          const result = await request(app).post('/exchange/sell')
+            .set({Authorization: token})
+            .send({
+              stockId: 'ELET3',
+              quantity: 10,
+            });
+          
+            expect(result.body.orderId).toBeDefined();
+            expect(result.body.stockId).toBeDefined();
+            expect(result.body.sellPrice).toBeDefined();
+            expect(result.body.quantity).toBeDefined();
+        });
+      })
     })
   });
 });
