@@ -158,4 +158,22 @@ const buyStocks = async (userId: number, stockId: string, quantity: number) => {
   };
 };
 
-export default { buyStocks };
+const createSellOrder = async (userId: number, stockId: string, quantity: number) => {
+  const userStocks = await Wallet.findOne({
+    where: { userId, stockId },
+  });
+
+  if (!userStocks || userStocks.quantity - quantity > 0) throw ErrorsList.notEnoughStocks;
+};
+
+const sellStocks = async (userId: number, stockId: string, quantity: number) => {
+  const hasStock = await Stocks.findOne({ where: { id: stockId } });
+
+  if (!hasStock) throw ErrorsList.stockNotFound;
+
+  const createdSellOrder = await createSellOrder(userId, stockId, quantity);
+
+  return createdSellOrder;
+};
+
+export default { buyStocks, sellStocks };

@@ -32,6 +32,10 @@ export const ErrorsList = {
     status: StatusCodes.NOT_FOUND,
     message: 'Stock not found',
   },
+  notEnoughStocks: {
+    status: StatusCodes.CONFLICT,
+    message: 'You don\'t have enough stocks',
+  },
 };
 
 export const CustomError = (status: number, message: string) => ({ status, message });

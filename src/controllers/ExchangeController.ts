@@ -12,4 +12,13 @@ const buyStocks = async (req: Request, res: Response) => {
   res.status(201).json(createdOrder);
 };
 
-export default { buyStocks };
+const sellStocks = async (req: Request, res: Response) => {
+  const token = req.headers.authorization;
+  const { stockId, quantity } = req.body;
+  if (!token) throw ErrorsList.unexpected;
+  const { id } = JWT.decodeToken(token);
+  const createdOrder = await ExchangeService.sellStocks(id, stockId, quantity);
+  res.status(201).json(createdOrder);
+};
+
+export default { buyStocks, sellStocks };
