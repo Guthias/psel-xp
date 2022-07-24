@@ -1,5 +1,6 @@
 import app from '../../app';
 import request from 'supertest';
+import resetDatabase from './assets/resetDatabase';
 
 describe('/wallet', () => {
   let token: any;

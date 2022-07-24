@@ -2,18 +2,20 @@ import request from 'supertest';
 import app from '../../app';
 import Users from '../../database/models/UserModel';
 import { IUser } from '../../interfaces/UserInterface';
+import resetDatabase from './assets/resetDatabase';
 
 describe('/account', () => {
   let token: any;
 
   beforeAll(async () => {
+    resetDatabase();
     const response = await request(app).post('/login').send({
       email: 'ada@teste.com',
       password: '12345678'
     });
 
     token = response.body.token;
-  });
+  }, 60000);
 
   describe('<GET />', () => {
     it('Shouldn\'t be possible call without a valid token', async () => {
