@@ -201,6 +201,8 @@ const sellStocks = async (userId: number, stockId: string, quantity: number) => 
 
   const createdSellOrder = await createSellOrder(userId, stockId, marketPrice, quantity);
 
+  await makeExchanges(stockId, marketPrice);
+
   return {
     orderId: createdSellOrder.id,
     stockId,
