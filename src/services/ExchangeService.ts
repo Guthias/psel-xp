@@ -148,7 +148,13 @@ const buyStocks = async (userId: number, stockId: string, quantity: number) => {
 
   await makeExchanges(stockId, marketPrice);
 
-  return { marketPrice, createdBuyOrder };
+  return {
+    orderId: createdBuyOrder.id,
+    stockId,
+    investedValue: quantity * marketPrice,
+    orderPrice: marketPrice,
+    quantity,
+  };
 };
 
 export default { buyStocks };

@@ -8,8 +8,8 @@ const buyStocks = async (req: Request, res: Response) => {
   const { stockId, quantity } = req.body;
   if (!token) throw ErrorsList.unexpected;
   const { id } = JWT.decodeToken(token);
-  const marketPrice = await ExchangeService.buyStocks(id, stockId, quantity);
-  res.status(201).json({ marketPrice });
+  const createdOrder = await ExchangeService.buyStocks(id, stockId, quantity);
+  res.status(201).json(createdOrder);
 };
 
 export default { buyStocks };

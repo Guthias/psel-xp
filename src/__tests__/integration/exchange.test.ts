@@ -105,6 +105,7 @@ describe('/exchange' , () => {
             expect(result.body.orderId).toBeDefined();
             expect(result.body.stockId).toBeDefined();
             expect(result.body.investedValue).toBeDefined();
+            expect(result.body.orderPrice).toBeDefined();
             expect(result.body.quantity).toBeDefined();
         });
       })
