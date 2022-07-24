@@ -1,6 +1,7 @@
 import { QueryTypes } from 'sequelize';
 import sequelize from '../database/models';
 import BuyOrder from '../database/models/BuyOrderModel';
+import SellOrder from '../database/models/SellOrderModel';
 import { IWalletRawOrder } from '../interfaces/IOrder';
 import { IUserStocks } from '../interfaces/StocksInterface';
 
@@ -41,4 +42,24 @@ const getBuyOrders = async (userId:number) => {
   })).sort((a, b) => a.stockId.localeCompare(b.stockId));
 };
 
-export default { getAll, getBuyOrders };
+const getSellOrders = async (userId:number) => {
+  const sellOrders = await SellOrder.findAll({
+    attributes: [
+      ['id', 'orderId'],
+      'stockId',
+      'quantity',
+      'price',
+    ],
+    where: { userId },
+    raw: true,
+  }) as unknown as IWalletRawOrder[];
+
+  return sellOrders.map((order) => ({
+    orderId: order.orderId,
+    stockId: order.stockId,
+    quantity: order.quantity,
+    price: Number(order.price),
+  })).sort((a, b) => a.stockId.localeCompare(b.stockId));
+};
+
+export default { getAll, getBuyOrders, getSellOrders };

@@ -6,5 +6,6 @@ const routes = Router();
 
 routes.get('/', AuthVerify, WalletController.getAll);
 routes.get('/buy', AuthVerify, WalletController.getBuyOrders);
+routes.get('/sell', AuthVerify, WalletController.getSellOrders);
 
 export default routes;
