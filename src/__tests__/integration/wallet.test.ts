@@ -124,7 +124,7 @@ describe('/wallet', () => {
         const result = await request(app).get('/wallet/buy')
           .set({ Authorization: token });
 
-        const stocksOrder = result.body.map(({ orderId }: { orderId: string }) => orderId);
+        const stocksOrder = result.body.map(({ stockId }: { stockId: string }) => stockId);
 
         expect(stocksOrder[0]).toBe('ELET3');
         expect(stocksOrder[1]).toBe('XPBR31');
@@ -191,7 +191,7 @@ describe('/wallet', () => {
         const result = await request(app).get('/wallet/sell')
           .set({ Authorization: token });
 
-        const stocksOrder = result.body.map(({ orderId }: { orderId: string }) => orderId);
+        const stocksOrder = result.body.map(({ stockId }: { stockId: string }) => stockId);
 
         expect(stocksOrder[0]).toBe('ABEV3');
         expect(stocksOrder[1]).toBe('AZUL4');
