@@ -93,21 +93,22 @@ npm start
 ## 🧪 Testes e TDD
 
 <details>
-
 <summary><strong>Por que TDD?</strong></summary>
 Inicialmente o meu objetivo era implementar todo o código e posteriormente, escrever os testes mas quando comecei a impementar o sistema de trocas, começou ocorrer diversos <i>bugs</i> e apenas com o Insomnia e verificando o banco no Workbench, estava sendo muito contra-produtivo identificar os problemas
 
 <br>
+<br>
 
-Nesse momento decidi começar a metodologia do TDD para poder encontrar e corrigir os erros durante o desenvolvimento além de garantir que a aplicação esta funcionando corretamente
+Nesse momento decidi começar a utilizar a metodologia TDD (Test Development Driven) para poder encontrar e corrigir os erros durante o desenvolvimento com menos dificuldade além de garantir de poder garantir que aplicação esta funcionando corretamente, como o esperado
 </details>
 
 <details>
 
 <summary><strong>96% de cobertura total com testes de integração</strong></summary>
+
 Devido a falta de tempo e por não saber como fazer testes unitarios com o Sequelize resolvi fazer testes de integração
 
-Durante a execução dos testes é criado um novo banco de dados, que é utilizado exclusivamente para os testes
+Durante a execução dos testes é criado um novo banco de dados, que é utilizado exclusivamente na execução dos testes
 </details>
   
 <details>
