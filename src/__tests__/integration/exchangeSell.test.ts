@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from '../../app';
 
-describe('/exchange' , () => {
+describe('/exchange', () => {
   describe('<POST /sell>', () => {
     let token: any;
 
@@ -17,7 +17,7 @@ describe('/exchange' , () => {
     describe('It\'s an authorized route', () => {
       it('Shouldn\'t be possible access without a token', async () => {
         const result = await request(app).post('/exchange/sell');
-        
+
         expect(result.status).toBe(401);
         expect(result.body.message).toBe('Token not found');
       })
@@ -25,7 +25,7 @@ describe('/exchange' , () => {
       it('Shouldn\'t be possible access with an invalid token', async () => {
         const result = await request(app).post('/exchange/sell')
           .set({ Authorization: 'tokenInvalido' });
-        
+
         expect(result.status).toBe(401);
         expect(result.body.message).toBe('Invalid or expired Token');
       })
@@ -38,18 +38,18 @@ describe('/exchange' , () => {
           .send({
             quantity: 50,
           });
-        
+
         expect(result.status).toBe(400);
         expect(result.body.message).toBe('\"stockId\" is required');
       })
-  
+
       it('Should have an error 400 when missing quantity', async () => {
         const result = await request(app).post('/exchange/sell')
           .set({ Authorization: token })
           .send({
             stockId: 'XPBR31',
           });
-        
+
         expect(result.status).toBe(400);
         expect(result.body.message).toBe('\"quantity\" is required');
       })
@@ -59,36 +59,36 @@ describe('/exchange' , () => {
       describe('Verify fail requests', () => {
         it('Should return an error if user don\'t have enough stocks which he\'s trying to sell', async () => {
           const result = await request(app).post('/exchange/sell')
-            .set({Authorization: token})
+            .set({ Authorization: token })
             .send({
               stockId: 'XPBR31',
               quantity: 50,
             });
-          
+
           expect(result.status).toBe(409);
-          expect(result.body.message).toBe('You don\'t have enough stock quantity');
+          expect(result.body.message).toBe('You don\'t have enough stocks');
         })
 
         it('Should have an error user try to sell a stock which he don\'t have', async () => {
           const result = await request(app).post('/exchange/sell')
-            .set({Authorization: token})
+            .set({ Authorization: token })
             .send({
               stockId: 'ABEV3',
               quantity: 10,
             });
-          
+
           expect(result.status).toBe(409);
-          expect(result.body.message).toBe('You don\'t have enough stock quantity');
+          expect(result.body.message).toBe('You don\'t have enough stocks');
         });
 
         it('Should have an error with status 404 when stock don\'t be found', async () => {
           const result = await request(app).post('/exchange/sell')
-            .set({Authorization: token})
+            .set({ Authorization: token })
             .send({
               stockId: 'AAAAA',
               quantity: 10,
             });
-          
+
           expect(result.status).toBe(404);
           expect(result.body.message).toBe('Stock not found');
         });
