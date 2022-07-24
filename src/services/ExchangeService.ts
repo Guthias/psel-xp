@@ -30,7 +30,7 @@ const updateSellOrder = async (
     { quantity: boughtQuantity },
     { where: { id }, transaction },
   );
-  const { quantity: SellOrderQuantity } = await BuyOrder.findOne(
+  const { quantity: SellOrderQuantity } = await SellOrder.findOne(
     { attributes: ['quantity'], where: { id }, transaction },
   ) as unknown as IOrder;
 
