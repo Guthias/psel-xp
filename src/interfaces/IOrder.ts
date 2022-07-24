@@ -6,4 +6,11 @@ interface IOrder {
   price: number,
 }
 
+export interface IWalletRawOrder {
+  orderId: number,
+  stockId: string,
+  quantity: number,
+  price: string,
+}
+
 export default IOrder;

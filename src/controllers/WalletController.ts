@@ -12,4 +12,13 @@ const getAll = async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json(walletStocks);
 };
 
-export default { getAll };
+const getBuyOrders = async (req:Request, res:Response) => {
+  const token = req.headers.authorization as string;
+
+  const { id } = JWT.decodeToken(token);
+
+  const walletBuyOrders = await WalletService.getBuyOrders(id);
+  res.status(StatusCodes.OK).json(walletBuyOrders);
+};
+
+export default { getAll, getBuyOrders };
