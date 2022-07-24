@@ -120,29 +120,69 @@ describe('/account', () => {
   describe('<POST /withdraw>', () => {
     describe('When incorrect fields', () => {
       it('Shouldn\'t be possible call without value', async () => {
-        
+        const result = await request(app).post('/account/withdraw')
+          .set({ Authorization: token })
+          .send({});
+
+        expect(result.status).toBe(400);
+        expect(result.body).toEqual({ message: '\"value\" is required'});
       })
 
-      it('Shouldn\'t be possible call without value be number bigger than 1', async () => {
-        
+      it('Should have a number bigger than 1', async () => {
+        const result = await request(app).post('/account/withdraw')
+        .set({ Authorization: token })
+        .send({
+          value: 0,
+        });
+
+        expect(result.status).toBe(400);
+        expect(result.body).toEqual({ message: '\"value\" must be greater than or equal to 1'});
       })
     })
 
     describe('When correct request body', () => {
       it('Should have status code 200 when be successeful', async () => {
+        const result = await request(app).post('/account/withdraw')
+        .set({ Authorization: token })
+        .send({
+          value: 100,
+        });
         
+        expect(result.status).toBe(200);
       })
 
       it('Should contain only new balance info', async () => {
+        const result = await request(app).post('/account/withdraw')
+        .set({ Authorization: token })
+        .send({
+          value: 100,
+        });
         
+        expect(Object.keys(result.body)).toEqual(['newBalance']);
+      })
+  
+      it('Should return correct new balance value', async () => {
+        const result = await request(app).post('/account/withdraw')
+        .set({ Authorization: token })
+        .send({
+          value: 100,
+        });
+        
+        const { balance: currentBalance } = await Users
+          .findOne({ attributes: ['balance'], where: { id: 2}}) as IUser;
+
+        expect(result.body.newBalance).toBe(Number(currentBalance));
       })
 
-      it('Should return new balance with new balance value', async () => {
+      it('Should return an error if the new balance be smaller than 0', async () => {
+        const result = await request(app).post('/account/withdraw')
+          .set({ Authorization: token })
+          .send({
+            value: 50000,
+          });
         
-      })
-
-      it('Should return an error with new balance bew smaller than 0', async () => {
-        
+        expect(result.status).toBe(402);
+        expect(result.body).toEqual({ message: 'Insuficient Founds' });
       })
     })
   })
