@@ -40,7 +40,7 @@ const updateSellOrder = async (
 };
 
 const addStockOnWallet = async (
-  { stockId, userId, quantity }: IOrder,
+  { stockId, userId }: IOrder,
   boughtQuantity: number,
   transaction: Transaction,
 ) => {
@@ -52,7 +52,7 @@ const addStockOnWallet = async (
       { where: { stockId, userId }, transaction },
     );
   } else {
-    await Wallet.create({ stockId, userId, quantity }, { transaction });
+    await Wallet.create({ stockId, userId, quantity: boughtQuantity }, { transaction });
   }
 };
 
@@ -98,6 +98,7 @@ const makeExchanges = async (stockId: string, price: number) => {
     await t.commit();
   } catch (e) {
     await t.rollback();
+    throw e;
   }
 };
 
@@ -129,10 +130,10 @@ const createBuyOrder = async (userId: number, stockId: string, price: number, qu
       },
       { transaction: t },
     );
-    t.commit();
+    await t.commit();
     return createdBuyOrder;
   } catch (e) {
-    t.rollback();
+    await t.rollback();
     throw e;
   }
 };
