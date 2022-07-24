@@ -170,7 +170,7 @@ describe('/exchange' , () => {
           });
         })
 
-        describe.only('When bougth quantity be the same on than sell order', () => {
+        describe('When bougth quantity be the same on than sell order', () => {
           let buyOrderId:any;
 
           beforeAll(async () => {
