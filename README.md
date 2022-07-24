@@ -2,13 +2,13 @@
 
 ## 📖 Indice
 
-- Sobre
-- Como rodar o projeto localmente
-- Ferramentas utilizdas
-- Processo de decisão
-- Regras de negôcio
+- [Sobre](#sobre)
+- [Como rodar o projeto localmente](#rodando-localmente)
+- [Ferramentas utilizdas](#ferramentas)
+- [Testes e TDD](#testes)
 
-## 📌 Sobre
+<h2 id="sobre">📌 Sobre</h2>
+
 - Esse projeto tem a intenção de criar uma API que simula um sistema de compra e venda de ações
 
 - A API foi feita com `TypeScript` e `Express` e segue a arquitetura MSC
@@ -17,9 +17,9 @@
 
 - A compra e venda de ações é feita atráves de ordens de compra e venda que só se concluem quando a um pedido de compra e um de venda com o mesmo valor
 
-## 💻 Como rodar o projeto localmente
+<h2 id="rodando-localmente">💻 Como rodar o projeto localmente</h2>
 <details>
-<summary><strong>Rodando sem Docker</strong></summary>
+<summary><strong>Rodando sem o Docker</strong></summary>
 
 - Faça o clone do projeto
 ```
@@ -57,8 +57,7 @@ npm start
 ```
 </details>
 
-## 🛠️ Ferramentas Utilizadas
-
+<h2 id="ferramentas">🛠️ Ferramentas Utilizadas</h2>
 <details>
 
 <summary><strong>Principais ferramentas utilizadas</strong></summary>
@@ -90,7 +89,7 @@ npm start
 
 </details>
 
-## 🧪 Testes e TDD
+<h2 id="testes">🧪 Testes e TDD</h2>
 
 <details>
 <summary><strong>Por que TDD?</strong></summary>
@@ -99,7 +98,7 @@ Inicialmente o meu objetivo era implementar todo o código e posteriormente, esc
 <br>
 <br>
 
-Nesse momento decidi começar a utilizar a metodologia TDD (Test Development Driven) para poder encontrar e corrigir os erros durante o desenvolvimento com menos dificuldade além de garantir de poder garantir que aplicação esta funcionando corretamente, como o esperado
+Nesse momento decidi começar a utilizar a metodologia TDD (Test Development Driven) para poder encontrar e corrigir os erros durante o desenvolvimento com menos dificuldade além de poder garantir que aplicação esta funcionando como o esperado
 </details>
 
 <details>
