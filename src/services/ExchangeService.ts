@@ -7,6 +7,7 @@ import { ErrorsList } from '../middlewares/ErrorsMiddleware';
 import { IUserBalance } from '../interfaces/UserInterface';
 import IOrder from '../interfaces/IOrder';
 import Wallet from '../database/models/WalletModel';
+import Stocks from '../database/models/StockModel';
 
 const addBalanceOnSeller = async (
   sellerId: number,
@@ -137,6 +138,10 @@ const createBuyOrder = async (userId: number, stockId: string, price: number, qu
 };
 
 const buyStocks = async (userId: number, stockId: string, quantity: number) => {
+  const hasStock = await Stocks.findOne({ where: { id: stockId } });
+
+  if (!hasStock) throw ErrorsList.stockNotFound;
+
   const marketPrice = await SellOrder.min('price', { where: { stockId } }) as number;
 
   const createdBuyOrder = await createBuyOrder(userId, stockId, marketPrice, quantity);
