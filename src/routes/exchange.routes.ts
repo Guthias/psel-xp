@@ -6,6 +6,6 @@ import OrderValidate from '../middlewares/OrderValidate';
 const routes = Router();
 
 routes.post('/buy', AuthVerify, OrderValidate, ExchangeController.buyStocks);
-routes.post('/sell', AuthVerify);
+routes.post('/sell', AuthVerify, OrderValidate);
 
 export default routes;
