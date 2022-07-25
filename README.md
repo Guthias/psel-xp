@@ -1,5 +1,10 @@
-# PSEL XP
+# Desafio XP Back-end
 
+Olá meu nome é Gustavo Mathias, mas pode me chamar de Guthias e seja bem vind@ ao meu repositorio, Esse desafio foi feito em um mometo da minha vida em que eu tive que equilibrar diversos pratos ao mesmo tempo. 
+
+Mas como já disse Sócrates: `Uma vida sem desafios não vale a pena ser vivida.`
+
+![](https://i.gifer.com/51aX.gif)
 ## 📖 Indice
 
 - [Sobre](#sobre)
@@ -16,6 +21,15 @@
 - Para acessar a maior parte das rotas é necessario ter um token JWT valido
 
 - A compra e venda de ações é feita atráves de ordens de compra e venda que só se concluem quando a um pedido de compra e um de venda com o mesmo valor
+
+- O deploy está nesse link: [https://guthias-psel-xp.herokuapp.com](https://guthias-psel-xp.herokuapp.com)
+
+<details>
+<summary><strong>Diagrama do banco de dados</strong></summary>
+
+![](https://i.ibb.co/0DccgmW/diagrama-sql.png)
+
+</details>
 
 <h2 id="rodando-localmente">💻 Como rodar o projeto localmente</h2>
 <details>
@@ -104,6 +118,8 @@ Nesse momento decidi começar a utilizar a metodologia TDD (Test Development Dri
 <details>
 
 <summary><strong>96% de cobertura total com testes de integração</strong></summary>
+
+![](https://i.ibb.co/rG0FkPr/cobertura-de-testes.png)
 
 Devido a falta de tempo e por não saber como fazer testes unitarios com o Sequelize resolvi fazer testes de integração
 
